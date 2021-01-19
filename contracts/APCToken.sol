@@ -12,7 +12,16 @@ contract APCToken {
     uint256 _value
   );
 
+  event Approval(
+    address indexed _owner, 
+    address indexed _spender, 
+    uint256 _value
+  );
+
   mapping(address => uint256) public balanceOf;
+
+  //allowance mapping
+  mapping(address => mapping(address => uint256)) public allowance;
 
   constructor(uint256 _initialSupply) public {
     // allocate initial supply
@@ -27,6 +36,33 @@ contract APCToken {
     balanceOf[_to] += _value;
 
     emit Transfer(msg.sender, _to, _value);
+
+    return true;
+  }
+
+  // delegated transfer
+  // approve
+  function approve(address _spender, uint256 _value) public returns (bool success) {
+    // allowance
+    allowance[msg.sender][_spender] = _value;
+    // approve event
+    emit Approval(msg.sender, _spender, _value);
+
+    return true;
+  }
+
+  // handle delegated transfer
+  function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+    require(_value <= balanceOf[_from]);
+    require(_value <= allowance[_from][msg.sender]);
+    
+    balanceOf[_from] -= _value;
+    balanceOf[_to] += _value;
+
+    // change allowance
+    allowance[_from][msg.sender] -= _value;
+    
+    emit Transfer(_from, _to, _value);
 
     return true;
   }
