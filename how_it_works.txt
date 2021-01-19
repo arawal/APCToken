@@ -1,3 +1,4 @@
+https://www.youtube.com/playlist?list=PLS5SEs8ZftgWFuKg2wbm_0GLV0Tiy1R-n
 # provision tokens for sale from total supply
 # set token price in wei
 # assign an admin
