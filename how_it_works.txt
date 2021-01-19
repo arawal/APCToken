@@ -1,0 +1,5 @@
+# provision tokens for sale from total supply
+# set token price in wei
+# assign an admin
+# buy tokens
+# end sale (admin task)
