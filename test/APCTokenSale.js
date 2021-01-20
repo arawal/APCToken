@@ -60,4 +60,26 @@ contract("APCTokenSale", function (accounts) {
       assert(error.message.indexOf('revert') >= 0, 'not enough tokens to sell')
     })
   })
+
+  it('concludes', function () {
+    return APCToken.deployed().then(function (instance) {
+      tokenInstance = instance;
+      return APCTokenSale.deployed()
+    }).then(function (instance) {
+      tokenSaleInstance = instance;
+      // sale end by non admin
+      return tokenSaleInstance.endSale({ from: buyer })
+    }).then(assert.fail).catch(function (error) {
+      assert(error.message.indexOf('revert') >= 0, 'only admin')
+      // sale end by admin
+      return tokenSaleInstance.endSale({ from: admin })
+    }).then(function (receipt) {
+      return tokenInstance.balanceOf(admin)
+    }).then(function (balance) {
+      assert.equal(balance.toNumber(), 999990, 'not transferred back')
+      return tokenSaleInstance.tokenPrice()
+    }).then(assert.fail).catch(function (error) {
+      // destructed
+    })
+  })
 })
